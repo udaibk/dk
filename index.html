@@ -3,54 +3,113 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Photo Gallery</title>
+  <title></title>
+
   <style>
+    /* ---------- GLOBAL LAYOUT ---------- */
     body {
-      font-family: sans-serif;
-      background: #f4f4f4;
+      font-family: system-ui, sans-serif;
+      background: #f8f9fa;
       margin: 0;
-      padding: 2rem;
+      padding: 1rem;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
+      flex-direction: column;
+      align-items: center;
       user-select: none;
       -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
     }
+
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+      color: #333;
+      margin-bottom: 1rem;
+    }
+
+    /* ---------- GALLERY GRID ---------- */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    /* ---------- PHOTO CONTAINER ---------- */
     .photo {
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      position: relative;
       overflow: hidden;
-      max-width: 300px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      background: #fff;
     }
+
+    /* ---------- IMAGE PROTECTION ---------- */
     .photo img {
-  width: 100%;
-  height: auto;
-  display: block;
+      width: 100%;
+      height: auto;
+      display: block;
 
-  /* 🛡️ Protection settings */
-  pointer-events: none;     /* disables drag & right-click */
-  user-select: none;        /* prevents highlighting or copying */
-  -webkit-user-drag: none;  /* stops image dragging in Safari/Chrome */
-  -webkit-touch-callout: none; /* blocks iOS long-press save options */
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+      -webkit-touch-callout: none;
+    }
 
+    /* ---------- TRANSPARENT OVERLAY ---------- */
+    .photo::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: transparent;
+      z-index: 2;
+      pointer-events: all;
+    }
+
+    /* ---------- OPTIONAL CAPTION ---------- */
+    .caption {
+      text-align: center;
+      color: #777;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    /* ---------- MOBILE OPTIMIZATION ---------- */
+    @media (max-width: 600px) {
+      body {
+        padding: 0.5rem;
+      }
+      h1 {
+        font-size: 1.2rem;
+      }
+      .photo {
+        border-radius: 8px;
+      }
+    }
   </style>
+
   <script>
-    // Disable right-click
-    document.addEventListener('contextmenu', event => event.preventDefault());
+    /* Disable right-click globally */
+    document.addEventListener('contextmenu', e => e.preventDefault());
   </script>
 </head>
+
 <body>
-  <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.11.02 PM.jpeg" alt="Photo 1"></div>
-  <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.11.04 PM.jpeg" alt="Photo 2"></div>
-  <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.11.05 PM.jpeg" alt="Photo 3"></div>
-  <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.23.16 PM.jpeg" alt="Photo 3"></div>
-  <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.27.44 PM.jpeg" alt="Photo 3"></div>
-  <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.50.29 PM.jpeg" alt="Photo 3"></div>
+  <h1></h1>
+
+  <div class="gallery">
+      <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.11.02 PM.jpeg" alt="Photo 1"></div>
+      <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.11.04 PM.jpeg" alt="Photo 2"></div>
+      <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.11.05 PM.jpeg" alt="Photo 3"></div>
+      <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.23.16 PM.jpeg" alt="Photo 3"></div>
+      <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.27.44 PM.jpeg" alt="Photo 3"></div>
+      <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.50.29 PM.jpeg" alt="Photo 3"></div>
+
+  </div>
+
+  <div class="caption">© 2025 My Photos – Download Disabled</div>
 </body>
 </html>
