@@ -1,115 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title></title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
 
-  <style>
-    /* ---------- GLOBAL LAYOUT ---------- */
-    body {
-      font-family: system-ui, sans-serif;
-      background: #f8f9fa;
-      margin: 0;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      user-select: none;
-      -webkit-user-select: none;
-    }
+<style>
+  body {
+    margin: 0;
+    background: #111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: system-ui, sans-serif;
+    color: #fff;
+    user-select: none;
+    -webkit-user-select: none;
+  }
 
-    h1 {
-      text-align: center;
-      font-size: 1.5rem;
-      color: #333;
-      margin-bottom: 1rem;
-    }
+  .slideshow-container {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    height: 80vh;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    /* ---------- GALLERY GRID ---------- */
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-      width: 100%;
-      max-width: 1000px;
-    }
+  .slideshow-container img {
+    max-width: 100%;
+    max-height: 100%;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+  }
 
-    /* ---------- PHOTO CONTAINER ---------- */
-    .photo {
-      position: relative;
-      overflow: hidden;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      background: #fff;
-    }
+  .slideshow-container::after {
+    content: "";
+    position: absolute;
+    top:0; left:0; right:0; bottom:0;
+    background: transparent;
+    z-index: 2;
+    pointer-events: all;
+  }
 
-    /* ---------- IMAGE PROTECTION ---------- */
-    .photo img {
-      width: 100%;
-      height: auto;
-      display: block;
+  .buttons {
+    margin-top: 1rem;
+  }
 
-      pointer-events: none;
-      user-select: none;
-      -webkit-user-drag: none;
-      -webkit-touch-callout: none;
-    }
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: #333;
+    color: #fff;
+    margin: 0 0.5rem;
+  }
 
-    /* ---------- TRANSPARENT OVERLAY ---------- */
-    .photo::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: transparent;
-      z-index: 2;
-      pointer-events: all;
-    }
+  button:hover {
+    background: #555;
+  }
 
-    /* ---------- OPTIONAL CAPTION ---------- */
-    .caption {
-      text-align: center;
-      color: #777;
-      margin-top: 1rem;
-      font-size: 0.9rem;
-    }
+  .caption {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    text-align: center;
+  }
 
-    /* ---------- MOBILE OPTIMIZATION ---------- */
-    @media (max-width: 600px) {
-      body {
-        padding: 0.5rem;
-      }
-      h1 {
-        font-size: 1.2rem;
-      }
-      .photo {
-        border-radius: 8px;
-      }
-    }
-  </style>
+  @media (max-width: 600px) {
+    button { font-size: 0.9rem; padding: 0.4rem 0.8rem; }
+    .caption { font-size: 0.85rem; }
+  }
+</style>
 
-  <script>
-    /* Disable right-click globally */
-    document.addEventListener('contextmenu', e => e.preventDefault());
-  </script>
+<script>
+  // ---------- Global Right-click disable ----------
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  // ---------- Slideshow Data ----------
+  const images = ['WhatsApp Image 2025-10-22 at 9.11.02 PM.jpeg',
+                  'WhatsApp Image 2025-10-22 at 9.11.04 PM.jpeg',
+                  'WhatsApp Image 2025-10-22 at 9.11.05 PM.jpeg',
+                  'WhatsApp Image 2025-10-22 at 9.23.16 PM.jpeg',
+                  'WhatsApp Image 2025-10-22 at 9.27.44 PM.jpeg',
+                  'WhatsApp Image 2025-10-22 at 9.50.29 PM.jpeg'
+                  
+                 ]; // replace with your files
+  const captions = ['','','']; // optional captions
+  let currentIndex = 0;
+
+  function showImage(index) {
+    const img = document.getElementById('slideshow-img');
+    const caption = document.getElementById('caption');
+    img.src = images[index];
+    caption.textContent = captions[index] || `Image ${index+1}`;
+  }
+
+  function nextImage() {
+    currentIndex = (currentIndex + 1) % images.length;
+    showImage(currentIndex);
+  }
+
+  function prevImage() {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    showImage(currentIndex);
+  }
+
+  // ---------- Swipe Support ----------
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  function handleGesture() {
+    if (touchEndX < touchStartX - 50) nextImage(); // swipe left
+    if (touchEndX > touchStartX + 50) prevImage(); // swipe right
+  }
+
+  window.onload = () => {
+    showImage(currentIndex);
+    const container = document.querySelector('.slideshow-container');
+    container.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
+    container.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleGesture();
+    });
+  }
+</script>
 </head>
 
 <body>
-  <h1></h1>
-
-  <div class="gallery">
-      <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.11.02 PM.jpeg" alt="Photo 1"></div>
-      <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.11.04 PM.jpeg" alt="Photo 2"></div>
-      <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.11.05 PM.jpeg" alt="Photo 3"></div>
-      <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.23.16 PM.jpeg" alt="Photo 3"></div>
-      <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.27.44 PM.jpeg" alt="Photo 3"></div>
-      <div class="photo"><img src="WhatsApp Image 2025-10-22 at 9.50.29 PM.jpeg" alt="Photo 3"></div>
-
+  <div class="slideshow-container">
+    <img id="slideshow-img" alt="Slideshow Image">
   </div>
 
-  <div class="caption">© 2025 My Photos – Download Disabled</div>
+  <div class="buttons">
+    <button onclick="prevImage()">Previous</button>
+    <button onclick="nextImage()">Next</button>
+  </div>
+
+  <div class="caption" id="caption">Loading...</div>
 </body>
 </html>
